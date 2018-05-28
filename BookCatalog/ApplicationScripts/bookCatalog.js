@@ -3,7 +3,9 @@
 (function () {
     var self = this;
     var bookTable;
+    var bookTableEditor;
     var urlForTable = '';
+    var urlForUpdateBook = '';
 
     self.setUrlForTable = function (url) {
         urlForTable = url;
@@ -47,16 +49,17 @@
                 { "data": "Rate" },
                 { "data": "Authors" },
                 {
+                    "className": 'edit-control',
                     "render": function (data, type, row, meta) {
-                        return '<button id="btnEdit" type="button" class="btn btn-success" ><span class="glyphicon glyphicon-edit"></span></button>';
+                        return '<i id="editBookButton" class="fa fa-edit"></i>';
                     }
                 },
                 {
+                    "className": 'remove-control',
                     "render": function (data, type, row, meta) {
-                        return '<button id="btnDelete" type="button" class="btn btn-danger" ><span class="glyphicon glyphicon-remove"></span></button>';
+                        return '<i id="removeBookButton" class="fa fa-trash"></i>';
                     }
                 }
-
             ],
             "fnServerData": function (sSource, aoData, fnCallback, oSettings) {
                 oSettings.jqXHR = $.ajax({
@@ -69,7 +72,7 @@
                     }
                 })
             }
-        })
+        });
 
         $('#BookCatalogTable tbody').on('click', 'td.details-control', function () {
             var tableRow = $(this).closest('tr');
@@ -88,6 +91,13 @@
                 tdi.first().removeClass('fa-plus-square');
                 tdi.first().addClass('fa-minus-square');
             }
+        });
+
+        $('#BookCatalogTable tbody').on('click', 'td.edit-control', function () {
+            return '<div id="editModal" class="modal">' +
+                '<div class="modal-content">' +
+                '<p>Some text in modal</p>' +
+                '</div></div >';
         });
 
         bookTable.on('user-select', function (e, dt, type, cell, originalEvent) {

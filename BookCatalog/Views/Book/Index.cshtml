@@ -7,11 +7,27 @@
         text-align: center;
         color: forestgreen;
         cursor: pointer;
+        font-size: x-large;
     }
 
     tr.shown td.details-control {
         text-align: center;
         color: red;
+        font-size: x-large;
+    }
+
+    td.edit-control {
+        color: forestgreen;
+        font-size: x-large;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    td.remove-control {
+        color: red;
+        font-size: x-large;
+        text-align: center;
+        cursor: pointer;
     }
 </style>
 <div class="jumbotron">
@@ -60,6 +76,6 @@
 <script type="text/javascript">
     $(document).ready(function () {
         bookCatalog.setUrlForTable("@Url.Action("GetBookResultTable", "Book")");
-        bookCatalog.InitBookTable();      
+        bookCatalog.InitBookTable();
     });
 </script>
