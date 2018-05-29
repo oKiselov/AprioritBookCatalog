@@ -107,6 +107,16 @@
         });
     };
 
+    self.initEditModal = function () {
+        $('#editDialog').load("ApplicationScripts/editBook.html").dialog({
+            autoOpen: false,
+            modal: true,
+        });
+        $('#newBookBtn').click(function () {
+            $('#editDialog').load("ApplicationScripts/editBook.html").dialog("open");
+        });
+    };
+
     function format(rowData) {
         return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
             '<tr>' +

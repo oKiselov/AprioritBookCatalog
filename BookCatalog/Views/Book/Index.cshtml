@@ -61,6 +61,19 @@
 
 <div class="row">
     <div class="col-md-12">
+        <div class="col-md-3">
+            <button class="btn btn-success col-md-12" id="newBookBtn">New book</button>
+        </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-3">
+            <button class="btn btn-primary col-md-12" id="newAuthorBtn">New author</button>
+        </div>
+    </div>
+</div>
+<div id="editDialog"></div>
+
+<div class="row">
+    <div class="col-md-12">
         <div class="container">
             <div class="tab-content">
                 <div class="tab-pane active">
@@ -77,5 +90,6 @@
     $(document).ready(function () {
         bookCatalog.setUrlForTable("@Url.Action("GetBookResultTable", "Book")");
         bookCatalog.InitBookTable();
+        bookCatalog.initEditModal();
     });
 </script>
