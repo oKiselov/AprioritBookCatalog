@@ -108,14 +108,38 @@
     };
 
     self.initEditModal = function () {
-        $('#editDialog').load("ApplicationScripts/editBook.html").dialog({
+        bookTableEditor = $('#editDialog').load("ApplicationScripts/editBook.html").dialog({
             autoOpen: false,
             modal: true,
+            classes: {
+                "ui-dialog": "modal-content",
+                "ui-dialog-titlebar": "modal-header",
+                "ui-dialog-title": "modal-title",
+                "ui-dialog-titlebar-close": "close",
+                "ui-dialog-content": "modal-body",
+                "ui-dialog-buttonpane": "modal-footer"
+            },
+            buttons: [
+                {
+                    text: "Save book",
+                    addClass: "btn btn-success",
+                    click: updateBook()
+                },
+                {
+                    text: "Close",
+                    addClass: "btn btn-danger",
+                    click: function () { $(this).dialog("close"); }
+                }
+            ]
         });
-        $('#newBookBtn').click(function () {
-            $('#editDialog').load("ApplicationScripts/editBook.html").dialog("open");
+        $('#newBookBtn').click(function (e) {
+            e.preventDefault();
+            bookTableEditor.dialog("open");
         });
     };
+
+    function updateBook() {
+    }
 
     function format(rowData) {
         return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
