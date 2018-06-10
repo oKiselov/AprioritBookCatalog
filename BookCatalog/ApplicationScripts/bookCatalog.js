@@ -119,19 +119,36 @@
                 "ui-dialog-titlebar-close": "close",
                 "ui-dialog-content": "modal-body",
                 "ui-dialog-buttonpane": "modal-footer"
-            }
+            },
+            width: 500,
+            maxWidth: 500
         });
         $('#newBookBtn').click(function (e) {
             e.preventDefault();
             bookTableEditor.dialog("open");
         });
-        $('#btnSaveIt').click(function (e) {
+    };
+
+    self.InitEditBookModalButtons = function () {
+        $('#editBookDialog #btnSaveBookFromModal').click(function (e) {
             updateBook();
+        });
+        $('#editBookDialog #btnCloseBookEditModal').click(function (e) {
+            $('#editBookDialog').dialog("close");
+        });
+    };
+
+    self.InitEditAuthorModalButtons = function () {
+        $('#editAuthorDialog #btnSaveAuthorFromModal').click(function (e) {
+            updateBook();
+        });
+        $('#editAuthorDialog #btnCloseAuthorEditModal').click(function (e) {
+            $('#editAuthorDialog').dialog("close");
         });
     };
 
     self.InitEditAuthorModal = function () {
-        authorEditor = $('#editAuthor').load("ApplicationScripts/editAuthor.html").dialog({
+        authorEditor = $('#editAuthorDialog').load("ApplicationScripts/editAuthor.html").dialog({
             autoOpen: false,
             modal: true,
             classes: {
@@ -142,16 +159,8 @@
                 "ui-dialog-content": "modal-body",
                 "ui-dialog-buttonpane": "modal-footer"
             },
-            buttons: [{
-                text: "Save author",
-                addClass: "btn btn-success pull-left",
-                click: updateAuthor()
-            },
-            {
-                text: "Close",
-                addClass: "btn btn-danger pull-right",
-                click: function () { $(this).dialog("close"); }
-            }]
+            width: 500,
+            maxWidth: 500
         });
         $('#newAuthorBtn').click(function (e) {
             e.preventDefault();
@@ -161,8 +170,8 @@
 
     function updateBook() {
         var form = $('#editBookDialog #editBookForm');
-        form.validate();
-        var a = form.valid();
+        //form.validate();
+        //alert(form.valid());
     };
 
     function updateAuthor() {

@@ -30,6 +30,9 @@ namespace BookCatalog
             bundles.Add(new ScriptBundle("~/bundles/application").Include(
                 "~/ApplicationScripts/bookCatalog.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/chosen").Include(
+                "~/Scripts/chosen*"));
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css",
@@ -39,6 +42,8 @@ namespace BookCatalog
 
             bundles.Add(new StyleBundle("~/Content/font-awesome").Include(
                 "~/Content/font-awesome.css"));
+            bundles.Add(new StyleBundle("~/Content/chosen").Include(
+                "~/Content/chosen*"));
         }
     }
 }
