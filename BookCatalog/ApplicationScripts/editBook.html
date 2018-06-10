@@ -1,16 +1,22 @@
-﻿<div class="form-group">
-    <label for="title">Book title:</label>
-    <input type="text" id="title" required />
-</div>
-<div class="form-group">
-    <label for="published">Year of publishing:</label>
-    <input type="text" id="published" required />
-</div>
-<div class="form-group">
-    <label for="pages">Amount of pages:</label>
-    <input type="number" id="pages" required />
-</div>
-<div class="form-group">
-    <label for="rate">Rate:</label>
-    <input type="number" id="rate" />
-</div>
+﻿<form id="editBookForm">
+    <div class="form-group">
+        <label for="title">Book title:</label>
+        <input type="text" id="title" name="title" required />
+    </div>
+    <div class="form-group">
+        <label for="published">Year of publishing:</label>
+        <input type="text" id="published" name="published" required />
+    </div>
+    <div class="form-group">
+        <label for="pages">Amount of pages:</label>
+        <input type="number" id="pages" name="pages" required />
+    </div>
+    <div class="form-group">
+        <label for="rate">Rate:</label>
+        <input type="number" id="rate" name="rate" required />
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-success" id="btnSaveIt">Save</button>
+        <button type="button" class="btn btn-default" id="btnCloseIt" data-dismiss="modal">Close</button>
+    </div>
+</form>

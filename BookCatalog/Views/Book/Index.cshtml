@@ -70,7 +70,8 @@
         </div>
     </div>
 </div>
-<div id="editDialog"></div>
+<div id="editBookDialog"></div>
+<div id="editAuthor"></div>
 
 <div class="row">
     <div class="col-md-12">
@@ -90,6 +91,7 @@
     $(document).ready(function () {
         bookCatalog.setUrlForTable("@Url.Action("GetBookResultTable", "Book")");
         bookCatalog.InitBookTable();
-        bookCatalog.initEditModal();
+        bookCatalog.InitEditBookModal();
+        bookCatalog.InitEditAuthorModal();
     });
 </script>

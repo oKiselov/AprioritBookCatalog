@@ -26,7 +26,8 @@ namespace BookCatalog.Controllers
         [HttpPost]
         public JsonResult GetBookResultTable(DataTablePaginationModel paginationModel)
         {
-            return Json(new {
+            return Json(new
+            {
                 sEcho = paginationModel.sEcho,
                 iTotalRecords = bookService.GetTotalBooksAmount(),
                 iTotalDisplayRecords = bookService.GetTotalBooksAmount(),
@@ -58,5 +59,40 @@ namespace BookCatalog.Controllers
 
             return View();
         }
+
+        public void Save()
+        {
+            //var firstA = get model by id;
+
+            //if (firstA == null)
+            //{
+            //    throw new KeyNotFoundException(string.Format("Contact #{0} not found"));
+            //}
+
+            //Mapper.Map<fromClient, fromServer>(firstAFromClient, firstA);
+
+            //using (var tran = new TransactionScope())
+            //{
+
+            //Save();
+            //    LogChanges();
+            //    tran.Complete();
+            //}
+        }
+
+
+
+        //Save for Controller 
+        //if (ModelState.IsValid)
+        //    {
+        //        var getService from Autofac;
+        //service.Update(fromClient);
+        //        return JsonData(isSuccess: true, message: "Updated successfully", data: new
+        //            {
+        //                
+        //            });
+        //    }
+
+        //    return JsonData(ModelState);
     }
 }

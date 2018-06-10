@@ -4,6 +4,7 @@
     var self = this;
     var bookTable;
     var bookTableEditor;
+    var authorEditor;
     var urlForTable = '';
     var urlForUpdateBook = '';
 
@@ -107,8 +108,30 @@
         });
     };
 
-    self.initEditModal = function () {
-        bookTableEditor = $('#editDialog').load("ApplicationScripts/editBook.html").dialog({
+    self.InitEditBookModal = function () {
+        bookTableEditor = $('#editBookDialog').load("ApplicationScripts/editBook.html").dialog({
+            autoOpen: false,
+            modal: true,
+            classes: {
+                "ui-dialog": "modal-content",
+                "ui-dialog-titlebar": "modal-header",
+                "ui-dialog-title": "modal-title",
+                "ui-dialog-titlebar-close": "close",
+                "ui-dialog-content": "modal-body",
+                "ui-dialog-buttonpane": "modal-footer"
+            }
+        });
+        $('#newBookBtn').click(function (e) {
+            e.preventDefault();
+            bookTableEditor.dialog("open");
+        });
+        $('#btnSaveIt').click(function (e) {
+            updateBook();
+        });
+    };
+
+    self.InitEditAuthorModal = function () {
+        authorEditor = $('#editAuthor').load("ApplicationScripts/editAuthor.html").dialog({
             autoOpen: false,
             modal: true,
             classes: {
@@ -119,27 +142,32 @@
                 "ui-dialog-content": "modal-body",
                 "ui-dialog-buttonpane": "modal-footer"
             },
-            buttons: [
-                {
-                    text: "Save book",
-                    addClass: "btn btn-success",
-                    click: updateBook()
-                },
-                {
-                    text: "Close",
-                    addClass: "btn btn-danger",
-                    click: function () { $(this).dialog("close"); }
-                }
-            ]
+            buttons: [{
+                text: "Save author",
+                addClass: "btn btn-success pull-left",
+                click: updateAuthor()
+            },
+            {
+                text: "Close",
+                addClass: "btn btn-danger pull-right",
+                click: function () { $(this).dialog("close"); }
+            }]
         });
-        $('#newBookBtn').click(function (e) {
+        $('#newAuthorBtn').click(function (e) {
             e.preventDefault();
-            bookTableEditor.dialog("open");
+            authorEditor.dialog("open");
         });
     };
 
     function updateBook() {
-    }
+        var form = $('#editBookDialog #editBookForm');
+        form.validate();
+        var a = form.valid();
+    };
+
+    function updateAuthor() {
+
+    };
 
     function format(rowData) {
         return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
