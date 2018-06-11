@@ -52,7 +52,7 @@ namespace BookCatalog.Controllers
             {
                 authors = bookService.GetAuthorsList(),
                 
-            });
+            }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult About()

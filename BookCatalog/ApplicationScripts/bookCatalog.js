@@ -193,7 +193,7 @@
     };
 
     function setAuthorsList(authorsList) {
-        alert(authorsList.authors.length());
+        alert(authorsList.authors.length);
     };
 
     function format(rowData) {
