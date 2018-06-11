@@ -5,11 +5,12 @@
     var bookTable;
     var bookTableEditor;
     var authorEditor;
-    var urlForTable = '';
+    var urls = {};
     var urlForUpdateBook = '';
 
     self.setUrlForTable = function (url) {
-        urlForTable = url;
+        urls.getBookResultTable = url.getBookResultTable;
+        urls.getAuthorsList = url.getAuthorsList;
     };
 
     self.InitBookTable = function () {
@@ -23,7 +24,7 @@
             "bFilter": false,
             "bInfo": false,
             "bServerSide": true,
-            "sAjaxSource": urlForTable,
+            "sAjaxSource": urls.getBookResultTable,
             "columnDefs": [{
                 "targets": [2, 6, 7, 8],
                 "orderable": false
@@ -125,6 +126,7 @@
         });
         $('#newBookBtn').click(function (e) {
             e.preventDefault();
+            getAuthorsList();
             bookTableEditor.dialog("open");
         });
     };
@@ -171,11 +173,27 @@
     function updateBook() {
         var form = $('#editBookDialog #editBookForm');
         //form.validate();
-        //alert(form.valid());
+        alert(form.valid());
+
+
     };
 
     function updateAuthor() {
 
+    };
+
+    function getAuthorsList() {
+        $.ajax({
+            "type": "GET",
+            "url": urls.getAuthorsList,
+            "success": function (json) {
+                setAuthorsList(json);
+            }
+        });
+    };
+
+    function setAuthorsList(authorsList) {
+        alert(authorsList.authors.length());
     };
 
     function format(rowData) {

@@ -35,13 +35,22 @@ namespace BookCatalog.Bootstrappers
 
         public static void InitializeModelMapping()
         {
-            AutoMapper.Mapper.Initialize(cfg => cfg.CreateMap<Book, BookSearchViewModel>()
+            AutoMapper.Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<Book, BookSearchViewModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dest => dest.PublishingYear, opt => opt.MapFrom(src => src.PublishingYear))
                 .ForMember(dest => dest.PagesAmount, opt => opt.MapFrom(src => src.PagesAmount))
                 .ForMember(dest => dest.Rate, opt => opt.MapFrom(src => src.Rate))
-                .ForMember(dest => dest.AuthorsCollection, opt => opt.MapFrom(src => src.Authors)));
+                .ForMember(dest => dest.AuthorsCollection, opt => opt.MapFrom(src => src.Authors));
+
+                cfg.CreateMap<Author, AuthorSearchViewModel>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName));
+            });
+
         }
     }
 }

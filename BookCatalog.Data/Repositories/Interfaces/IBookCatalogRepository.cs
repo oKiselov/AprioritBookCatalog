@@ -11,6 +11,7 @@ namespace BookCatalog.Data.Repositories.Interfaces
     public interface IBookCatalogRepository
     {
         Book GetBook();
+        IList<Author> GetAuthorsList();
         int GetBooksAmount();
         IList<Book> GetBooks(Expression<Func<Book, int>> orderExpression, string destName, int displayStart, int displayLength);
     }

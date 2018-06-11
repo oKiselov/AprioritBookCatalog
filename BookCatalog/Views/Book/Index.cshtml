@@ -89,7 +89,10 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        bookCatalog.setUrlForTable("@Url.Action("GetBookResultTable", "Book")");
+        bookCatalog.setUrlForTable({
+            getBookResultTable: "@Url.Action("GetBookResultTable", "Book")",
+            getAuthorsList: "@Url.Action("GetAuthorsList", "Book")"
+        });
         bookCatalog.InitBookTable();
         bookCatalog.InitEditBookModal();
         bookCatalog.InitEditAuthorModal();

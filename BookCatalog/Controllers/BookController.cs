@@ -45,6 +45,15 @@ namespace BookCatalog.Controllers
         //        IsRedirectRequired = searchResponse.IsRedirectRequired
         //    }, JsonRequestBehavior.AllowGet);
 
+        [HttpGet]
+        public JsonResult GetAuthorsList()
+        {
+            return Json(new
+            {
+                authors = bookService.GetAuthorsList(),
+                
+            });
+        }
 
         public ActionResult About()
         {

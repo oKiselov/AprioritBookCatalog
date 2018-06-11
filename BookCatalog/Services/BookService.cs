@@ -20,6 +20,21 @@ namespace BookCatalog.Services
             this.bookCatalogRepository = bookCatalogRepository;
         }
 
+        public IEnumerable<AuthorSearchViewModel> GetAuthorsList()
+        {
+            var authors = bookCatalogRepository.GetAuthorsList();
+            var authorViews = new List<AuthorSearchViewModel>();
+
+            for (int i = 0; i < authors.Count(); i++)
+            {
+                var authorView = new AuthorSearchViewModel();
+                AutoMapper.Mapper.Map<Author, AuthorSearchViewModel>(authors[i], authorView);
+                authorViews.Add(authorView);
+            }
+
+            return authorViews;
+        }
+
         public Book GetBook()
         {
             return bookCatalogRepository.GetBook();

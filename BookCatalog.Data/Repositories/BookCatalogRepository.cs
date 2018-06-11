@@ -12,11 +12,18 @@ namespace BookCatalog.Data.Repositories
     {
         private readonly DbContext bookCatalogContext;
         private readonly DbSet<Book> dbSetBooks;
+        private readonly DbSet<Author> dbSetAuthors;
 
         public BookCatalogRepository(DbContext dbContext)
         {
             this.bookCatalogContext = dbContext;
             this.dbSetBooks = dbContext.Set<Book>();
+            this.dbSetAuthors = dbContext.Set<Author>();
+        }
+
+        public IList<Author> GetAuthorsList()
+        {
+            return dbSetAuthors.ToList();
         }
 
         public Book GetBook()

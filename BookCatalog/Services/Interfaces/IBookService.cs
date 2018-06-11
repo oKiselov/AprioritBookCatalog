@@ -12,6 +12,7 @@ namespace BookCatalog.Services.Interfaces
     public interface IBookService
     {
         Book GetBook();
+        IEnumerable<AuthorSearchViewModel> GetAuthorsList();
         IEnumerable<BookSearchViewModel> GetFilteredBooks(DataTablePaginationModel model);
         int GetTotalBooksAmount();
     }
