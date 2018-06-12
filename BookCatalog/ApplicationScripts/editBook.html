@@ -45,26 +45,7 @@
 </form>
 <script type="text/javascript">
     $(document).ready(function () {
-        var authorsArray = [{
-            index: 0,
-            name: "Shevchenko"
-        }, {
-            index: 1,
-            name: "NotSheva"
-        }, {
-            index: 2,
-            name: "NotShevaOrSheva"
-        }];
-
-        var authorsSelect = document.getElementById('multiselectAuthors');
-        $.each(authorsArray, function (i, e) {
-            $('#multiselectAuthors').append($('<option>', {
-                value: e.index,
-                text: e.name
-            }));
-        });
-
         bookCatalog.InitEditBookModalButtons();
-        $('.html-multi-chosen-select').chosen({ width: "100%" });
+        //$('.html-multi-chosen-select').chosen({ width: "100%" });
     });
 </script>

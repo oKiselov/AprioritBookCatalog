@@ -8,6 +8,8 @@
     var urls = {};
     var urlForUpdateBook = '';
 
+    var authorsArray = [];
+
     self.setUrlForTable = function (url) {
         urls.getBookResultTable = url.getBookResultTable;
         urls.getAuthorsList = url.getAuthorsList;
@@ -126,7 +128,6 @@
         });
         $('#newBookBtn').click(function (e) {
             e.preventDefault();
-            getAuthorsList();
             bookTableEditor.dialog("open");
         });
     };
@@ -170,6 +171,15 @@
         });
     };
 
+    function bindAuthorsDropDown() {
+        $.each(authorsArray, function (i, e) {
+            $('#multiselectAuthors').append($('<option>', {
+                value: e.value,
+                text: e.text
+            }));
+        });
+    };
+
     function updateBook() {
         var form = $('#editBookDialog #editBookForm');
         //form.validate();
@@ -182,7 +192,7 @@
 
     };
 
-    function getAuthorsList() {
+    self.getAuthorsList = function () {
         $.ajax({
             "type": "GET",
             "url": urls.getAuthorsList,
@@ -193,7 +203,13 @@
     };
 
     function setAuthorsList(authorsList) {
-        alert(authorsList.authors.length);
+        $.each(authorsList.authors, function (i, e) {
+            $('#multiselectAuthors').append($('<option>', {
+                value: e.Id,
+                text: e.FullName
+            }))
+        });
+        $('.html-multi-chosen-select').chosen({ width: "100%" });
     };
 
     function format(rowData) {
