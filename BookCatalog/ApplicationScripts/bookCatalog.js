@@ -183,8 +183,8 @@
     function updateBook() {
         var form = $('#editBookDialog #editBookForm');
         //form.validate();
-        alert(form.valid());
-
+        //alert(form.valid());
+        alert($('#multiselectAuthors').chosen().val());
 
     };
 

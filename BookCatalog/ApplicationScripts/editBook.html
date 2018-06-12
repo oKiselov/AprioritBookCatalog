@@ -20,6 +20,12 @@
         </div>
         <div class="row" style="margin:5px">
             <div class="form-group">
+                <label for="year" class="col-lg-4">Year:</label>
+                <input type="text" id="yearBookPublished" class="col-lg-8" name="year" required />
+            </div>
+        </div>
+        <div class="row" style="margin:5px">
+            <div class="form-group">
                 <label for="rate" class="col-lg-4">Rate:</label>
                 <input type="number" id="rate" class="col-lg-8" name="rate" required />
             </div>
@@ -46,6 +52,17 @@
 <script type="text/javascript">
     $(document).ready(function () {
         bookCatalog.InitEditBookModalButtons();
+        $('#yearBookPublished').datepicker({
+            changeMonth: false,
+            changeYear: true,
+            showButtonPanel: true,
+            dateFormat: 'yy',
+            onClose: function (dateText, inst) {
+                var year = $('#yearBookPublished').datepicker().val();
+                alert(year);
+                $('#yearBookPublished').datepicker('setDate', new Date(year, 0, 1));
+            }
+        });
         //$('.html-multi-chosen-select').chosen({ width: "100%" });
     });
 </script>
