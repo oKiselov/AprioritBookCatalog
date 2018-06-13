@@ -6,6 +6,8 @@ namespace BookCatalog.ViewModels
 {
     public class BookViewModel
     {
+        public int? Id { get; set; }
+
         [Required(ErrorMessage = "Book's Title is required field")]
         [MaxLength(100)]
         public string Title { get; set; }

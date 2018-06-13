@@ -37,13 +37,13 @@ namespace BookCatalog.Controllers
         }
 
         [HttpPost]
-        public JsonResult UpdateBook(BookViewModel bookViewModel)
+        public JsonResult SaveBook(BookViewModel bookViewModel)
         {
-            var a = bookViewModel;
-            
-
-
-            return Json(new { result = true});
+            if (!ModelState.IsValid)
+            {
+                return Json(new { result = new ServiceResponse() { IsSuccessfull = false, ResultMessage = Resources.Resources.ErrorOccured } });
+            }
+            return Json(new { result = bookService.SaveBook(bookViewModel) });
         }
 
         //    return Json(new
@@ -62,7 +62,7 @@ namespace BookCatalog.Controllers
             return Json(new
             {
                 authors = bookService.GetAuthorsList(),
-                
+
             }, JsonRequestBehavior.AllowGet);
         }
 

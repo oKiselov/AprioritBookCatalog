@@ -189,10 +189,10 @@
         }
         var bookForm = {
             title: $('#editBookDialog #editBookForm #title').val(),
-            PublishingYear: new Date($('#editBookDialog #editBookForm #yearBookPublished').datepicker().val(), 0, 1).toJSON(),
-            PagesAmount: $('#editBookDialog #editBookForm #pages').val(),
-            Rate: $('#editBookDialog #editBookForm #rate').val(),
-            Authors: $('#editBookDialog #editBookForm #multiselectAuthors').chosen().val()
+            publishingYear: new Date($('#editBookDialog #editBookForm #yearBookPublished').datepicker().val(), 0, 1).toJSON(),
+            pagesAmount: $('#editBookDialog #editBookForm #pages').val(),
+            rate: $('#editBookDialog #editBookForm #rate').val(),
+            authors: $('#editBookDialog #editBookForm #multiselectAuthors').chosen().val()
         };
 
         $.ajax({

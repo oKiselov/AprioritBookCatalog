@@ -61,6 +61,35 @@ namespace BookCatalog.Services
             return bookCatalogRepository.GetBooksAmount();
         }
 
+        public ServiceResponse SaveBook(BookViewModel bookViewModel)
+        {
+            var book = new Book();
+            AutoMapper.Mapper.Map<BookViewModel, Book>(bookViewModel, book);
+            book.Authors = bookCatalogRepository.GetAuthorsById(bookViewModel.Authors);
+
+            var response = new ServiceResponse();
+            try
+            {
+                if (bookViewModel.Id.HasValue)
+                {
+                    bookCatalogRepository.UpdateBook(book);
+                }
+                else
+                {
+                    bookCatalogRepository.SaveBook(book);
+                }
+
+                response.IsSuccessfull = true;
+                response.ResultMessage = Resources.Resources.CompletedSuccessfully;
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccessfull = false;
+                response.ResultMessage = $"{Resources.Resources.ErrorOccured}. {ex.Message}";
+            }
+            return response;
+        }
+
         private Expression<Func<Book, int>> GetOrderType(string nameOrderType)
         {
             Expression<Func<Book, int>> orderType = book => book.Id;
@@ -69,11 +98,11 @@ namespace BookCatalog.Services
             {
                 switch (orderResult)
                 {
-                    case (int)BookOrderType.Id: orderType = book => book.Id;break;
-                    case (int)BookOrderType.PublishingYear: orderType = book => book.PublishingYear;break;
+                    case (int)BookOrderType.Id: orderType = book => book.Id; break;
+                    case (int)BookOrderType.PublishingYear: orderType = book => book.PublishingYear; break;
                     case (int)BookOrderType.PagesAmount: orderType = book => book.PagesAmount; break;
-                    case (int)BookOrderType.Rate:orderType = book => book.Rate; break;
-                    default: orderType = book => book.Id;break;
+                    case (int)BookOrderType.Rate: orderType = book => book.Rate; break;
+                    default: orderType = book => book.Id; break;
                 }
             }
             return orderType;

@@ -10,8 +10,11 @@ namespace BookCatalog.Data.Repositories.Interfaces
 {
     public interface IBookCatalogRepository
     {
+        void SaveBook(Book book);
+        void UpdateBook(Book book);
         Book GetBook();
         IList<Author> GetAuthorsList();
+        IList<Author> GetAuthorsById(IEnumerable<int> authorsIds);
         int GetBooksAmount();
         IList<Book> GetBooks(Expression<Func<Book, int>> orderExpression, string destName, int displayStart, int displayLength);
     }

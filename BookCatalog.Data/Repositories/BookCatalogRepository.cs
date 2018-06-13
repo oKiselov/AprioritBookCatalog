@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Transactions;
 
 namespace BookCatalog.Data.Repositories
 {
@@ -19,6 +20,13 @@ namespace BookCatalog.Data.Repositories
             this.bookCatalogContext = dbContext;
             this.dbSetBooks = dbContext.Set<Book>();
             this.dbSetAuthors = dbContext.Set<Author>();
+        }
+
+        public IList<Author> GetAuthorsById(IEnumerable<int> authorsIds)
+        {
+            return dbSetAuthors
+                .Where(a => authorsIds.Contains(a.Id))
+                .ToList();
         }
 
         public IList<Author> GetAuthorsList()
@@ -49,6 +57,27 @@ namespace BookCatalog.Data.Repositories
             return destName == Resources.Resources.Descending
                 ? dbSetBooks.OrderByDescending(orderExplression)
                 : dbSetBooks.OrderBy(orderExplression);
+        }
+
+        public void SaveBook(Book book)
+        {
+            using(var tran = new TransactionScope())
+            {
+                dbSetBooks.Add(book);
+                bookCatalogContext.SaveChanges();
+                tran.Complete();
+            }
+        }
+
+        public void UpdateBook(Book book)
+        {
+            using (var tran = new TransactionScope())
+            {
+                var oldBook = dbSetBooks.FirstOrDefault(b => b.Id == book.Id);
+                oldBook = book;
+                bookCatalogContext.SaveChanges();
+                tran.Complete();
+            }
         }
     }
 }
