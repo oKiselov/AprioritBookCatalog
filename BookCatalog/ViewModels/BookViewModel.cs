@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace BookCatalog.ViewModels
@@ -7,22 +8,18 @@ namespace BookCatalog.ViewModels
     {
         [Required(ErrorMessage = "Book's Title is required field")]
         [MaxLength(100)]
-        [DisplayName("Book's Title")]
         public string Title { get; set; }
 
         [Required(ErrorMessage = "Year of Publishing is required field")]
-        [DisplayName("Year of Publishing")]
-        public int PublishingYear { get; set; }
+        public DateTime PublishingYear { get; set; }
 
-        [Required(ErrorMessage = "mount of Pages is required field")]
-        [DisplayName("Amount of Pages")]
+        [Required(ErrorMessage = "Amount of Pages is required field")]
         public int PagesAmount { get; set; }
 
         [Required(ErrorMessage = "Book's Rate is required field")]
-        [DisplayName("Rate")]
         public int Rate { get; set; }
 
-        [DisplayName("Author(s)")]
-        public string Authors { get; set; }
+        [Required(ErrorMessage ="At least one author should be selected")]
+        public int[] Authors { get; set; }
     }
 }

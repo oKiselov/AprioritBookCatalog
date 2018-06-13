@@ -1,5 +1,6 @@
 ﻿using BookCatalog.Models;
 using BookCatalog.Services.Interfaces;
+using BookCatalog.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,16 @@ namespace BookCatalog.Controllers
                 iTotalDisplayRecords = bookService.GetTotalBooksAmount(),
                 aaData = bookService.GetFilteredBooks(paginationModel)
             });
+        }
+
+        [HttpPost]
+        public JsonResult UpdateBook(BookViewModel bookViewModel)
+        {
+            var a = bookViewModel;
+            
+
+
+            return Json(new { result = true});
         }
 
         //    return Json(new

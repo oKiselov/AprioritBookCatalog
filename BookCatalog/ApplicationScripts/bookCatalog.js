@@ -13,6 +13,7 @@
     self.setUrlForTable = function (url) {
         urls.getBookResultTable = url.getBookResultTable;
         urls.getAuthorsList = url.getAuthorsList;
+        urls.updateBook = url.updateBook;
     };
 
     self.InitBookTable = function () {
@@ -181,11 +182,32 @@
     };
 
     function updateBook() {
-        var form = $('#editBookDialog #editBookForm');
-        //form.validate();
-        //alert(form.valid());
-        alert($('#multiselectAuthors').chosen().val());
+        var form = $('#editBookDialog #editBookForm');  
 
+        if (!form.valid()) {
+            alert("Fill all required fields");
+        }
+        var bookForm = {
+            title: $('#editBookDialog #editBookForm #title').val(),
+            PublishingYear: new Date($('#editBookDialog #editBookForm #yearBookPublished').datepicker().val(), 0, 1).toJSON(),
+            PagesAmount: $('#editBookDialog #editBookForm #pages').val(),
+            Rate: $('#editBookDialog #editBookForm #rate').val(),
+            Authors: $('#editBookDialog #editBookForm #multiselectAuthors').chosen().val()
+        };
+
+        $.ajax({
+            "dataType": 'json',
+            "type": "POST",
+            "url": urls.updateBook,
+            "data": bookForm,
+            "success": function (json) {
+                alert(json.result);
+            }
+        });
+
+        $('#editBookDialog').dialog("close");
+
+        //var bookForm = 
     };
 
     function updateAuthor() {

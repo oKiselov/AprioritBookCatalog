@@ -8,12 +8,6 @@
         </div>
         <div class="row" style="margin:5px">
             <div class="form-group">
-                <label for="published" class="col-lg-4">Year:</label>
-                <input type="text" id="published" name="published" class="col-lg-8" required />
-            </div>
-        </div>
-        <div class="row" style="margin:5px">
-            <div class="form-group">
                 <label for="pages" class="col-lg-4">Pages:</label>
                 <input type="number" id="pages" class="col-lg-8" name="pages" required />
             </div>
@@ -58,9 +52,9 @@
             showButtonPanel: true,
             dateFormat: 'yy',
             onClose: function (dateText, inst) {
-                var year = $('#yearBookPublished').datepicker().val();
-                alert(year);
-                $('#yearBookPublished').datepicker('setDate', new Date(year, 0, 1));
+                //var year = $('#yearBookPublished').datepicker().val();
+                //alert(year);
+                //$('#yearBookPublished').datepicker('setDate', new Date(year, 0, 1));
             }
         });
         //$('.html-multi-chosen-select').chosen({ width: "100%" });

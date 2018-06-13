@@ -91,7 +91,8 @@
     $(document).ready(function () {
         bookCatalog.setUrlForTable({
             getBookResultTable: "@Url.Action("GetBookResultTable", "Book")",
-            getAuthorsList: "@Url.Action("GetAuthorsList", "Book")"
+            getAuthorsList: "@Url.Action("GetAuthorsList", "Book")",
+            updateBook: "@Url.Action("UpdateBook", "Book")"
         });
         bookCatalog.InitBookTable();
         bookCatalog.InitEditBookModal();
