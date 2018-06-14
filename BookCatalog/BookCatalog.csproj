@@ -177,6 +177,7 @@
     <Compile Include="Services\BookService.cs" />
     <Compile Include="Services\Interfaces\IBookService.cs" />
     <Compile Include="ViewModels\AuthorSearchViewModel.cs" />
+    <Compile Include="ViewModels\AuthorViewModel.cs" />
     <Compile Include="ViewModels\BookSearchViewModel.cs" />
     <Compile Include="ViewModels\BookViewModel.cs" />
   </ItemGroup>

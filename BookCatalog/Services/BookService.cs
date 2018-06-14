@@ -42,7 +42,7 @@ namespace BookCatalog.Services
 
         public IEnumerable<BookSearchViewModel> GetFilteredBooks(DataTablePaginationModel model)
         {
-            var books = bookCatalogRepository.GetBooks(GetOrderType(model.iSortCol_0), model.sSortDir_0, model.iDisplayStart, model.iDisplayLength);
+            var books = bookCatalogRepository.GetBooks(GetOrderType(model.iSortCol_0), model.sSortDir_0, model.iDisplayStart, model.iDisplayLength, model.sSearch_2);
 
             var booksViews = new List<BookSearchViewModel>();
 
@@ -56,16 +56,44 @@ namespace BookCatalog.Services
             return booksViews;
         }
 
-        public int GetTotalBooksAmount()
+        public int GetTotalBooksAmount(string searchOption)
         {
-            return bookCatalogRepository.GetBooksAmount();
+            return bookCatalogRepository.GetBooksAmount(searchOption);
+        }
+
+        public ServiceResponse SaveAuthor(AuthorViewModel authorViewModel)
+        {
+            var author = new Author();
+            AutoMapper.Mapper.Map<AuthorViewModel, Author>(authorViewModel, author);
+
+            var response = new ServiceResponse();
+            try
+            {
+                if (authorViewModel.Id.HasValue)
+                {
+                    bookCatalogRepository.UpdateAuthor(author);
+                }
+                else
+                {
+                    bookCatalogRepository.SaveAuthor(author);
+                }
+
+                response.IsSuccessfull = true;
+                response.ResultMessage = Resources.Resources.CompletedSuccessfully;
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccessfull = false;
+                response.ResultMessage = $"{Resources.Resources.ErrorOccured}. {ex.Message}";
+            }
+            return response;
         }
 
         public ServiceResponse SaveBook(BookViewModel bookViewModel)
         {
             var book = new Book();
+            bookViewModel.AuthorsCollection = bookCatalogRepository.GetAuthorsById(bookViewModel.Authors);
             AutoMapper.Mapper.Map<BookViewModel, Book>(bookViewModel, book);
-            book.Authors = bookCatalogRepository.GetAuthorsById(bookViewModel.Authors);
 
             var response = new ServiceResponse();
             try

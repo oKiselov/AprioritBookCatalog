@@ -12,9 +12,10 @@ namespace BookCatalog.Services.Interfaces
     public interface IBookService
     {
         ServiceResponse SaveBook(BookViewModel bookViewModel);
+        ServiceResponse SaveAuthor(AuthorViewModel authorViewModel);
         Book GetBook();
         IEnumerable<AuthorSearchViewModel> GetAuthorsList();
         IEnumerable<BookSearchViewModel> GetFilteredBooks(DataTablePaginationModel model);
-        int GetTotalBooksAmount();
+        int GetTotalBooksAmount(string searchOption);
     }
 }

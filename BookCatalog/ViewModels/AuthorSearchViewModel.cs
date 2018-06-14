@@ -11,6 +11,7 @@ namespace BookCatalog.ViewModels
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public int AmountOfBooks { get; set; }
         public string FullName
         {
             get

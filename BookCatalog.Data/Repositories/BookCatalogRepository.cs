@@ -39,17 +39,18 @@ namespace BookCatalog.Data.Repositories
             return dbSetBooks.FirstOrDefault();
         }
 
-        public IList<Book> GetBooks(Expression<Func<Book, int>> orderExpression, string destName, int displayStart, int displayLength)
+        public IList<Book> GetBooks(Expression<Func<Book, int>> orderExpression, string destName, int displayStart, int displayLength, string searchOption)
         {
             return GetOrderedQuery(orderExpression, destName)
+                .Where(b => string.IsNullOrEmpty(searchOption) ? true : b.Title.ToLower().Contains(searchOption.ToLower()))
                 .Skip(displayStart)
                 .Take(displayLength)
                 .ToList();
         }
 
-        public int GetBooksAmount()
+        public int GetBooksAmount(string searchOption)
         {
-            return dbSetBooks.Count();
+            return dbSetBooks.Count(b=> string.IsNullOrEmpty(searchOption) ? true : b.Title.ToLower().Contains(searchOption.ToLower()));
         }
 
         public IQueryable<Book> GetOrderedQuery(Expression<Func<Book, int>> orderExplression, string destName)
@@ -59,11 +60,32 @@ namespace BookCatalog.Data.Repositories
                 : dbSetBooks.OrderBy(orderExplression);
         }
 
+        public void SaveAuthor(Author author)
+        {
+            using (var tran = new TransactionScope())
+            {
+                dbSetAuthors.Add(author);
+                bookCatalogContext.SaveChanges();
+                tran.Complete();
+            }
+        }
+
         public void SaveBook(Book book)
         {
             using(var tran = new TransactionScope())
             {
                 dbSetBooks.Add(book);
+                bookCatalogContext.SaveChanges();
+                tran.Complete();
+            }
+        }
+
+        public void UpdateAuthor(Author author)
+        {
+            using (var tran = new TransactionScope())
+            {
+                var oldauthor = dbSetAuthors.FirstOrDefault(b => b.Id == author.Id);
+                oldauthor = author;
                 bookCatalogContext.SaveChanges();
                 tran.Complete();
             }

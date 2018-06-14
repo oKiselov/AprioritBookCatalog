@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BookCatalog.Data.Entities;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -18,10 +20,13 @@ namespace BookCatalog.ViewModels
         [Required(ErrorMessage = "Amount of Pages is required field")]
         public int PagesAmount { get; set; }
 
-        [Required(ErrorMessage = "Book's Rate is required field")]
+        [Required(ErrorMessage = "Book's Rate is required field (from 1 to 5)")]
+        [Range(1, 5)]
         public int Rate { get; set; }
 
         [Required(ErrorMessage ="At least one author should be selected")]
         public int[] Authors { get; set; }
+
+        public virtual ICollection<Author> AuthorsCollection { get; set; }
     }
 }

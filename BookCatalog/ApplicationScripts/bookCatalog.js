@@ -7,6 +7,7 @@
     var authorEditor;
     var urls = {};
     var urlForUpdateBook = '';
+    var requiredFieldsNotFilled = "Fill all required fileds";
 
     var authorsArray = [];
 
@@ -14,6 +15,7 @@
         urls.getBookResultTable = url.getBookResultTable;
         urls.getAuthorsList = url.getAuthorsList;
         urls.updateBook = url.updateBook;
+        urls.updateAuthor = url.updateAuthor;
     };
 
     self.InitBookTable = function () {
@@ -24,7 +26,7 @@
             "bPaginate": true,
             "sPaginationType": "first_last_numbers",
             "iDisplayLength": 2,
-            "bFilter": false,
+            "bFilter": true,
             "bInfo": false,
             "bServerSide": true,
             "sAjaxSource": urls.getBookResultTable,
@@ -68,12 +70,15 @@
             ],
             "fnServerData": function (sSource, aoData, fnCallback, oSettings) {
                 oSettings.jqXHR = $.ajax({
-                    "dataType": 'json',
-                    "type": "POST",
-                    "url": sSource,
-                    "data": aoData,
-                    "success": function (json) {
+                    dataType: 'json',
+                    type: "POST",
+                    url: sSource,
+                    data: aoData,
+                    success: function (json) {
                         fnCallback(json);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert("Error occured during execution. Status: " + xhr.status + ", Error: " + thrownError);
                     }
                 })
             }
@@ -110,6 +115,28 @@
                 e.preventDefault();
             }
         });
+
+        // #myInput is a <input type="text"> element
+        $('#searchInput').on('keyup', function () {
+            bookTable.api().columns(2).search(this.value).draw();
+        });
+
+
+        /*
+             $('#store-list').dataTable({
+        "sPaginationType": "full_numbers"
+    });
+
+    $("#myFilter").on('keyup', function (){
+        $('#store-list').dataTable().fnFilter(this.value);
+    });
+         */
+
+
+        //// Event listener to the two range filtering inputs to redraw on input
+        //$('#min, #max').keyup(function () {
+        //    table.draw();
+        //});
     };
 
     self.InitEditBookModal = function () {
@@ -135,16 +162,24 @@
 
     self.InitEditBookModalButtons = function () {
         $('#editBookDialog #btnSaveBookFromModal').click(function (e) {
+            e.preventDefault();
             updateBook();
         });
         $('#editBookDialog #btnCloseBookEditModal').click(function (e) {
             $('#editBookDialog').dialog("close");
         });
+        $('#editBookDialog #editBookForm #yearBookPublished').datepicker({
+            changeMonth: false,
+            changeYear: true,
+            showButtonPanel: true,
+            dateFormat: 'yy',
+        });
     };
 
     self.InitEditAuthorModalButtons = function () {
         $('#editAuthorDialog #btnSaveAuthorFromModal').click(function (e) {
-            updateBook();
+            e.preventDefault();
+            updateAuthor();
         });
         $('#editAuthorDialog #btnCloseAuthorEditModal').click(function (e) {
             $('#editAuthorDialog').dialog("close");
@@ -172,54 +207,101 @@
         });
     };
 
-    function bindAuthorsDropDown() {
-        $.each(authorsArray, function (i, e) {
-            $('#multiselectAuthors').append($('<option>', {
-                value: e.value,
-                text: e.text
-            }));
-        });
-    };
+    //function bindAuthorsDropDown() {
+    //    $.each(authorsArray, function (i, e) {
+    //        $('#multiselectAuthors').append($('<option>', {
+    //            value: e.value,
+    //            text: e.text
+    //        }));
+    //    });
+    //};
 
-    function updateBook() {
-        var form = $('#editBookDialog #editBookForm');  
+    function updateAuthor() {
+        var form = $('#editAuthorDialog #editAuthorForm');
 
         if (!form.valid()) {
-            alert("Fill all required fields");
+            alert(requiredFieldsNotFilled);
+            return;
         }
-        var bookForm = {
+        var authorForm = getAuthorFilledForm();
+        if (postDataToServer(authorForm, urls.updateAuthor)) {
+            clearAuthorFilledForm();
+            $('#editAuthorDialog').dialog("close");
+        }
+    }
+
+    function postDataToServer(dataToSend, urlToSend, ) {
+        var response = true;
+        $.ajax({
+            url: urlToSend,
+            type: "POST",
+            data: dataToSend,
+            success: function (json) {
+                alert(json.result.ResultMessage);
+                response = json.result.IsSuccessfull;
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("Error occured during execution. Status: " + xhr.status + ", Error: " + thrownError);
+                response = false;
+            }
+        });
+        return response;
+    }
+
+    function updateBook() {
+        var form = $('#editBookDialog #editBookForm');
+
+        if (!form.valid()) {
+            alert(requiredFieldsNotFilled);
+            return;
+        }
+        var bookForm = getBookFilledForm();
+        if (postDataToServer(bookForm, urls.updateBook)) {
+            clearBookFilledForm();
+            $('#editBookDialog').dialog("close");
+        }
+    }
+
+    function getBookFilledForm() {
+        return {
             title: $('#editBookDialog #editBookForm #title').val(),
             publishingYear: new Date($('#editBookDialog #editBookForm #yearBookPublished').datepicker().val(), 0, 1).toJSON(),
             pagesAmount: $('#editBookDialog #editBookForm #pages').val(),
             rate: $('#editBookDialog #editBookForm #rate').val(),
             authors: $('#editBookDialog #editBookForm #multiselectAuthors').chosen().val()
         };
+    }
 
-        $.ajax({
-            "dataType": 'json',
-            "type": "POST",
-            "url": urls.updateBook,
-            "data": bookForm,
-            "success": function (json) {
-                alert(json.result);
-            }
-        });
+    function clearBookFilledForm() {
+        $('#editBookDialog #editBookForm #title').val("");
+        $('#editBookDialog #editBookForm #yearBookPublished').datepicker().val("");
+        $('#editBookDialog #editBookForm #pages').val("");
+        $('#editBookDialog #editBookForm #rate').val("");
+        $('#editBookDialog #editBookForm #multiselectAuthors').chosen().val("").trigger("chosen:updated");;
+    }
 
-        $('#editBookDialog').dialog("close");
+    function getAuthorFilledForm() {
+        return {
+            firstName: $('#editAuthorDialog #editAuthorForm #firstName').val(),
+            lastName: $('#editAuthorDialog #editAuthorForm #lastName').val()
+        };
+    }
 
-        //var bookForm = 
-    };
+    function clearAuthorFilledForm() {
+        $('#editAuthorDialog #editAuthorForm #firstName').val("");
+        $('#editAuthorDialog #editAuthorForm #lastName').val("");
+    }
 
-    function updateAuthor() {
-
-    };
 
     self.getAuthorsList = function () {
         $.ajax({
-            "type": "GET",
-            "url": urls.getAuthorsList,
-            "success": function (json) {
+            type: "GET",
+            url: urls.getAuthorsList,
+            success: function (json) {
                 setAuthorsList(json);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("Error occured during execution. Status: " + xhr.status + ", Error: " + thrownError);
             }
         });
     };

@@ -30,8 +30,8 @@ namespace BookCatalog.Controllers
             return Json(new
             {
                 sEcho = paginationModel.sEcho,
-                iTotalRecords = bookService.GetTotalBooksAmount(),
-                iTotalDisplayRecords = bookService.GetTotalBooksAmount(),
+                iTotalRecords = bookService.GetTotalBooksAmount(paginationModel.sSearch_2),
+                iTotalDisplayRecords = bookService.GetTotalBooksAmount(paginationModel.sSearch_2),
                 aaData = bookService.GetFilteredBooks(paginationModel)
             });
         }
@@ -41,9 +41,20 @@ namespace BookCatalog.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json(new { result = new ServiceResponse() { IsSuccessfull = false, ResultMessage = Resources.Resources.ErrorOccured } });
+                //return Json(new { result = new ServiceResponse() { IsSuccessfull = false, ResultMessage = Resources.Resources.ErrorOccured } });
+                return Json( new { result = new ServiceResponse() { IsSuccessfull = false, ResultMessage = ModelState.FirstOrDefault(m => m.Value.Errors.Any()).Value.Errors.FirstOrDefault().ErrorMessage } });
             }
             return Json(new { result = bookService.SaveBook(bookViewModel) });
+        }
+
+        [HttpPost]
+        public JsonResult SaveAuthor(AuthorViewModel authorViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { result = new ServiceResponse() { IsSuccessfull = false, ResultMessage = ModelState.FirstOrDefault(m => m.Value.Errors.Any()).Value.Errors.FirstOrDefault().ErrorMessage } });
+            }
+            return Json( new { result = bookService.SaveAuthor(authorViewModel)});
         }
 
         //    return Json(new

@@ -12,10 +12,12 @@ namespace BookCatalog.Data.Repositories.Interfaces
     {
         void SaveBook(Book book);
         void UpdateBook(Book book);
+        void SaveAuthor(Author author);
+        void UpdateAuthor(Author author);
         Book GetBook();
         IList<Author> GetAuthorsList();
         IList<Author> GetAuthorsById(IEnumerable<int> authorsIds);
-        int GetBooksAmount();
-        IList<Book> GetBooks(Expression<Func<Book, int>> orderExpression, string destName, int displayStart, int displayLength);
+        int GetBooksAmount(string searchOption);
+        IList<Book> GetBooks(Expression<Func<Book, int>> orderExpression, string destName, int displayStart, int displayLengthб, string searchOption);
     }
 }

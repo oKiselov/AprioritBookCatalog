@@ -62,6 +62,16 @@
 <div class="row">
     <div class="col-md-12">
         <div class="col-md-3">
+            Search: 
+        </div>
+        <div class="col-md-6">
+            <input type="text" id="searchInput">
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-3">
             <button class="btn btn-success col-md-12" id="newBookBtn">New book</button>
         </div>
         <div class="col-md-6"></div>
@@ -92,7 +102,8 @@
         bookCatalog.setUrlForTable({
             getBookResultTable: "@Url.Action("GetBookResultTable", "Book")",
             getAuthorsList: "@Url.Action("GetAuthorsList", "Book")",
-            updateBook: "@Url.Action("SaveBook", "Book")"
+            updateBook: "@Url.Action("SaveBook", "Book")",
+            updateAuthor: "@Url.Action("SaveAuthor", "Book")"
         });
         bookCatalog.InitBookTable();
         bookCatalog.InitEditBookModal();

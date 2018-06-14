@@ -12,5 +12,6 @@ namespace BookCatalog.Models
         public int iDisplayStart { get; set; }
         public string iSortCol_0 { get; set; }
         public string sSortDir_0 { get; set; }
+        public string sSearch_2 { get; set; }
     }
 }
