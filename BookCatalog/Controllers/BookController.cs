@@ -48,6 +48,12 @@ namespace BookCatalog.Controllers
         }
 
         [HttpPost]
+        public JsonResult RemoveBook(int bookId)
+        {
+            return Json(new { result = bookService.RemoveBook(bookId) });
+        }
+
+        [HttpPost]
         public JsonResult SaveAuthor(AuthorViewModel authorViewModel)
         {
             if (!ModelState.IsValid)

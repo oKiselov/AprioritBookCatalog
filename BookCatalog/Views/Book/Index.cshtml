@@ -65,7 +65,7 @@
             Search: 
         </div>
         <div class="col-md-6">
-            <input type="text" id="searchInput">
+            <input type="text" id="searchInput" placeholder="Enter title of book here..." >
         </div>
     </div>
 </div>
@@ -103,7 +103,8 @@
             getBookResultTable: "@Url.Action("GetBookResultTable", "Book")",
             getAuthorsList: "@Url.Action("GetAuthorsList", "Book")",
             updateBook: "@Url.Action("SaveBook", "Book")",
-            updateAuthor: "@Url.Action("SaveAuthor", "Book")"
+            updateAuthor: "@Url.Action("SaveAuthor", "Book")",
+            removeBook: "@Url.Action("RemoveBook", "Book")"
         });
         bookCatalog.InitBookTable();
         bookCatalog.InitEditBookModal();

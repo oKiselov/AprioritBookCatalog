@@ -35,9 +35,9 @@ namespace BookCatalog.Services
             return authorViews;
         }
 
-        public Book GetBook()
+        public Book GetBook(int bookId)
         {
-            return bookCatalogRepository.GetBook();
+            return bookCatalogRepository.GetBook(bookId);
         }
 
         public IEnumerable<BookSearchViewModel> GetFilteredBooks(DataTablePaginationModel model)
@@ -61,6 +61,29 @@ namespace BookCatalog.Services
             return bookCatalogRepository.GetBooksAmount(searchOption);
         }
 
+        public ServiceResponse RemoveBook(int bookId)
+        {
+            var book = bookCatalogRepository.GetBook(bookId);
+            var response = new ServiceResponse();
+            if (book != null)
+            {
+                try
+                {
+                    bookCatalogRepository.RemoveBook(book);
+                    response = CreateResponse(true, Resources.Resources.CompletedSuccessfully);
+                }
+                catch (Exception ex)
+                {
+                    response = CreateResponse(false, $"{Resources.Resources.ErrorOccured}. {ex.Message}");
+                }
+            }
+            else
+            {
+                response = CreateResponse(false, Resources.Resources.BookIsAbsent);
+            }
+            return response;
+        }
+
         public ServiceResponse SaveAuthor(AuthorViewModel authorViewModel)
         {
             var author = new Author();
@@ -77,14 +100,11 @@ namespace BookCatalog.Services
                 {
                     bookCatalogRepository.SaveAuthor(author);
                 }
-
-                response.IsSuccessfull = true;
-                response.ResultMessage = Resources.Resources.CompletedSuccessfully;
+                response = CreateResponse(true, Resources.Resources.CompletedSuccessfully);
             }
             catch (Exception ex)
             {
-                response.IsSuccessfull = false;
-                response.ResultMessage = $"{Resources.Resources.ErrorOccured}. {ex.Message}";
+                response = CreateResponse(false, $"{Resources.Resources.ErrorOccured}. {ex.Message}");
             }
             return response;
         }
@@ -95,7 +115,7 @@ namespace BookCatalog.Services
             bookViewModel.AuthorsCollection = bookCatalogRepository.GetAuthorsById(bookViewModel.Authors);
             AutoMapper.Mapper.Map<BookViewModel, Book>(bookViewModel, book);
 
-            var response = new ServiceResponse();
+            ServiceResponse response;
             try
             {
                 if (bookViewModel.Id.HasValue)
@@ -106,14 +126,11 @@ namespace BookCatalog.Services
                 {
                     bookCatalogRepository.SaveBook(book);
                 }
-
-                response.IsSuccessfull = true;
-                response.ResultMessage = Resources.Resources.CompletedSuccessfully;
+                response = CreateResponse(true, Resources.Resources.CompletedSuccessfully);
             }
             catch (Exception ex)
             {
-                response.IsSuccessfull = false;
-                response.ResultMessage = $"{Resources.Resources.ErrorOccured}. {ex.Message}";
+                response = CreateResponse(false, $"{Resources.Resources.ErrorOccured}. {ex.Message}");
             }
             return response;
         }
@@ -134,6 +151,15 @@ namespace BookCatalog.Services
                 }
             }
             return orderType;
+        }
+
+        private ServiceResponse CreateResponse(bool isSuccessfull, string message)
+        {
+            return new ServiceResponse
+            {
+                IsSuccessfull = isSuccessfull,
+                ResultMessage = message
+            };
         }
     }
 }

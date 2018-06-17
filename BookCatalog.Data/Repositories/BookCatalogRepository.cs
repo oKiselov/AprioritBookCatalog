@@ -34,9 +34,19 @@ namespace BookCatalog.Data.Repositories
             return dbSetAuthors.ToList();
         }
 
-        public Book GetBook()
+        public Book GetBook(int bookId)
         {
-            return dbSetBooks.FirstOrDefault();
+            return dbSetBooks.FirstOrDefault(b=>b.Id == bookId);
+        }
+
+        public void RemoveBook(Book book)
+        {
+            using (var tran = new TransactionScope())
+            {
+                dbSetBooks.Remove(book);
+                bookCatalogContext.SaveChanges();
+                tran.Complete();
+            }
         }
 
         public IList<Book> GetBooks(Expression<Func<Book, int>> orderExpression, string destName, int displayStart, int displayLength, string searchOption)

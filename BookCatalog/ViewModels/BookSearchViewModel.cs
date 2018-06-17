@@ -20,8 +20,8 @@ namespace BookCatalog.ViewModels
                 if (AuthorsCollection.Count > 0)
                 {
                     AuthorsCollection.ForEach(e => authors += string.IsNullOrEmpty(authors) 
-                    ? e.FirstName + " " + e.LastName + Environment.NewLine
-                    : ", " + e.FirstName + " " + e.LastName + Environment.NewLine);
+                    ? e.FirstName + " " + e.LastName
+                    : ", " + e.FirstName + " " + e.LastName);
                 }
                 return authors;
             }

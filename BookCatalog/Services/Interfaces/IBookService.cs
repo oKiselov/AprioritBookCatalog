@@ -13,7 +13,8 @@ namespace BookCatalog.Services.Interfaces
     {
         ServiceResponse SaveBook(BookViewModel bookViewModel);
         ServiceResponse SaveAuthor(AuthorViewModel authorViewModel);
-        Book GetBook();
+        ServiceResponse RemoveBook(int bookId);
+        Book GetBook(int bookId);
         IEnumerable<AuthorSearchViewModel> GetAuthorsList();
         IEnumerable<BookSearchViewModel> GetFilteredBooks(DataTablePaginationModel model);
         int GetTotalBooksAmount(string searchOption);

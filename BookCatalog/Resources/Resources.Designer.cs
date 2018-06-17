@@ -61,6 +61,15 @@ namespace BookCatalog.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There are no data about specified book.
+        /// </summary>
+        internal static string BookIsAbsent {
+            get {
+                return ResourceManager.GetString("BookIsAbsent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Completed successfully.
         /// </summary>
         internal static string CompletedSuccessfully {

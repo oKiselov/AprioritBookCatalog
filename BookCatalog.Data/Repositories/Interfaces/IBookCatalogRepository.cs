@@ -14,7 +14,8 @@ namespace BookCatalog.Data.Repositories.Interfaces
         void UpdateBook(Book book);
         void SaveAuthor(Author author);
         void UpdateAuthor(Author author);
-        Book GetBook();
+        Book GetBook(int bookId);
+        void RemoveBook(Book book);
         IList<Author> GetAuthorsList();
         IList<Author> GetAuthorsById(IEnumerable<int> authorsIds);
         int GetBooksAmount(string searchOption);

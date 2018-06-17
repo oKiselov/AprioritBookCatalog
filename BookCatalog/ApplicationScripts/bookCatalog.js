@@ -16,6 +16,7 @@
         urls.getAuthorsList = url.getAuthorsList;
         urls.updateBook = url.updateBook;
         urls.updateAuthor = url.updateAuthor;
+        urls.removeBook = url.removeBook;
     };
 
     self.InitBookTable = function () {
@@ -103,11 +104,37 @@
             }
         });
 
+        $('#BookCatalogTable tbody').on('click', 'td.remove-control', function () {
+            var tableRow = (this).closest('tr');
+            var row = bookTable.api().row(tableRow).data();
+            if (confirm("Are you sure, you want to remove book: " + row.Title + "?"))
+                removeBook(row.Id);
+        });
+
         $('#BookCatalogTable tbody').on('click', 'td.edit-control', function () {
-            return '<div id="editModal" class="modal">' +
-                '<div class="modal-content">' +
-                '<p>Some text in modal</p>' +
-                '</div></div >';
+            var tableRow = (this).closest('tr');
+            var row = bookTable.api().row(tableRow).data();
+            clearBookFilledForm();
+
+            $('#editBookDialog #editBookForm #bookId').val(row.Id);
+            $('#editBookDialog #editBookForm #title').val(row.Title);
+            $('#editBookDialog #editBookForm #yearBookPublished').datepicker().val(row.PublishingYear);
+            $('#editBookDialog #editBookForm #pages').val(row.PagesAmount);
+            $('#editBookDialog #editBookForm #rate').val(row.Rate);
+            var existingAuthors = row.Authors.split(", ");
+            var selectedAuthors = [];
+
+            $.each(existingAuthors, function (i, e) {
+                $('#editBookDialog #editBookForm #multiselectAuthors option').filter(function () {
+                    if ($(this).text() == e) {
+                        var sel = $(this).val();
+                        selectedAuthors.push(sel);
+                    }
+                });
+            });
+            $('#editBookDialog #editBookForm #multiselectAuthors').chosen().val(selectedAuthors).trigger("chosen:updated");
+
+            bookTableEditor.dialog("open");
         });
 
         bookTable.on('user-select', function (e, dt, type, cell, originalEvent) {
@@ -116,27 +143,10 @@
             }
         });
 
-        // #myInput is a <input type="text"> element
         $('#searchInput').on('keyup', function () {
             bookTable.api().columns(2).search(this.value).draw();
         });
 
-
-        /*
-             $('#store-list').dataTable({
-        "sPaginationType": "full_numbers"
-    });
-
-    $("#myFilter").on('keyup', function (){
-        $('#store-list').dataTable().fnFilter(this.value);
-    });
-         */
-
-
-        //// Event listener to the two range filtering inputs to redraw on input
-        //$('#min, #max').keyup(function () {
-        //    table.draw();
-        //});
     };
 
     self.InitEditBookModal = function () {
@@ -207,14 +217,10 @@
         });
     };
 
-    //function bindAuthorsDropDown() {
-    //    $.each(authorsArray, function (i, e) {
-    //        $('#multiselectAuthors').append($('<option>', {
-    //            value: e.value,
-    //            text: e.text
-    //        }));
-    //    });
-    //};
+    function removeBook(bookId) {
+        if (postDataToServer(bookId, urls.removeBook))
+            bookTable.ajax.reload();
+    };
 
     function updateAuthor() {
         var form = $('#editAuthorDialog #editAuthorForm');
@@ -230,7 +236,7 @@
         }
     }
 
-    function postDataToServer(dataToSend, urlToSend, ) {
+    function postDataToServer(dataToSend, urlToSend) {
         var response = true;
         $.ajax({
             url: urlToSend,
@@ -264,6 +270,7 @@
 
     function getBookFilledForm() {
         return {
+            Id: $('#editBookDialog #editBookForm #bookId').val(),
             title: $('#editBookDialog #editBookForm #title').val(),
             publishingYear: new Date($('#editBookDialog #editBookForm #yearBookPublished').datepicker().val(), 0, 1).toJSON(),
             pagesAmount: $('#editBookDialog #editBookForm #pages').val(),
@@ -273,11 +280,12 @@
     }
 
     function clearBookFilledForm() {
+        $('#editBookDialog #editBookForm #bookId').val("");
         $('#editBookDialog #editBookForm #title').val("");
         $('#editBookDialog #editBookForm #yearBookPublished').datepicker().val("");
         $('#editBookDialog #editBookForm #pages').val("");
         $('#editBookDialog #editBookForm #rate').val("");
-        $('#editBookDialog #editBookForm #multiselectAuthors').chosen().val("").trigger("chosen:updated");;
+        $('#editBookDialog #editBookForm #multiselectAuthors').chosen().val("").trigger("chosen:updated");
     }
 
     function getAuthorFilledForm() {
