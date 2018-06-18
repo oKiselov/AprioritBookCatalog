@@ -95,7 +95,7 @@ namespace BookCatalog.Data.Repositories
             using (var tran = new TransactionScope())
             {
                 var oldauthor = dbSetAuthors.FirstOrDefault(b => b.Id == author.Id);
-                oldauthor = author;
+                bookCatalogContext.Entry(oldauthor).CurrentValues.SetValues(author);
                 bookCatalogContext.SaveChanges();
                 tran.Complete();
             }

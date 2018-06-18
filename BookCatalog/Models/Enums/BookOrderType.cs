@@ -3,8 +3,8 @@
     public enum BookOrderType
     {
         Id = 0,
-        PublishingYear = 2,
-        PagesAmount = 3,
-        Rate = 4
+        PublishingYear = 3,
+        PagesAmount = 4,
+        Rate = 5
     }
 }

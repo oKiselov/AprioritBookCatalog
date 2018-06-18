@@ -6,9 +6,7 @@
     var bookTableEditor;
     var authorEditor;
     var urls = {};
-    var urlForUpdateBook = '';
     var requiredFieldsNotFilled = "Fill all required fileds";
-
     var authorsArray = [];
 
     self.setUrlForTable = function (url) {
@@ -175,6 +173,7 @@
             updateBook();
         });
         $('#editBookDialog #btnCloseBookEditModal').click(function (e) {
+            clearBookFilledForm();
             $('#editBookDialog').dialog("close");
         });
         $('#editBookDialog #editBookForm #yearBookPublished').datepicker({
@@ -191,6 +190,7 @@
             updateAuthor();
         });
         $('#editAuthorDialog #btnCloseAuthorEditModal').click(function (e) {
+            clearAuthorFilledForm();
             $('#editAuthorDialog').dialog("close");
         });
     };
@@ -213,6 +213,29 @@
         $('#newAuthorBtn').click(function (e) {
             e.preventDefault();
             authorEditor.dialog("open");
+        });
+    };
+
+    self.openUpdateAuthorModal = function (authorName) {
+        var author = getAuthorByFullName(authorName);
+
+        $('#editAuthorDialog #editAuthorForm #authorId').val(author.id);
+        $('#editAuthorDialog #editAuthorForm #firstName').val(author.firstName);
+        $('#editAuthorDialog #editAuthorForm #lastName').val(author.lastName);
+
+        authorEditor.dialog("open");
+    }
+
+    self.getAuthorsList = function () {
+        $.ajax({
+            type: "GET",
+            url: urls.getAuthorsList,
+            success: function (json) {
+                setAuthorsList(json);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("Error occured during execution. Status: " + xhr.status + ", Error: " + thrownError);
+            }
         });
     };
 
@@ -289,6 +312,7 @@
 
     function getAuthorFilledForm() {
         return {
+            id: $('#editAuthorDialog #editAuthorForm #authorId').val(),
             firstName: $('#editAuthorDialog #editAuthorForm #firstName').val(),
             lastName: $('#editAuthorDialog #editAuthorForm #lastName').val()
         };
@@ -299,34 +323,18 @@
         $('#editAuthorDialog #editAuthorForm #lastName').val("");
     }
 
-    self.openUpdateAuthorModal = function(id, authorName) {
-        var names = authorName.split(" ");
-
-        var lastName = names.filter(function (elem) {
-            return elem != names[0];
-        }).join(" ");
-
-        $('#editAuthorDialog #editAuthorForm #authorId').val(id);
-        $('#editAuthorDialog #editAuthorForm #firstName').val(names[0]);
-        $('#editAuthorDialog #editAuthorForm #lastName').val(lastName);
-
-        authorEditor.dialog("open");
-    }
-
-    self.getAuthorsList = function () {
-        $.ajax({
-            type: "GET",
-            url: urls.getAuthorsList,
-            success: function (json) {
-                setAuthorsList(json);
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert("Error occured during execution. Status: " + xhr.status + ", Error: " + thrownError);
-            }
-        });
-    };
-
     function setAuthorsList(authorsList) {
+        authorsArray = [];
+        $.each(authorsList.authors, function (i, e) {
+            authorsArray.push({
+                id: e.Id,
+                firstName: e.FirstName,
+                lastName: e.LastName,
+                fullName: e.FullName,
+                amountOfBooks: e.AmountOfBooks
+            });
+        });
+
         $.each(authorsList.authors, function (i, e) {
             $('#multiselectAuthors').append($('<option>', {
                 value: e.Id,
@@ -336,6 +344,24 @@
         $('.html-multi-chosen-select').chosen({ width: "100%" });
     };
 
+    function getAmountOfBooksByAuthor(author) {
+        var amount; 
+        authorsArray.filter(function (elem) {
+            if (elem.fullName == author)
+                amount = elem.amountOfBooks;
+        });
+        return amount;
+    };
+
+    function getAuthorByFullName(fullName) {
+        var author;
+        authorsArray.filter(function (elem) {
+            if (elem.fullName == fullName)
+                author = elem;
+        });
+        return author;
+    };
+
     function format(rowData) {
         var existingAuthors = rowData.Authors.split(", ");
         var authorsHtml = "";
@@ -343,7 +369,7 @@
         $.each(existingAuthors, function (i, e) {
             var nodeAuthorHtml = '<tr>' +
                 '<td>Author:</td>' +
-                '<td>' + '<i id="editAuthorButton' + i + '" class="fa fa-edit edit-author-control" onclick="bookCatalog.openUpdateAuthorModal(' + rowData.Id + ',\'' + e + '\')"></i>' + e + '</td>' +
+                '<td>' + '<i id="editAuthorButton' + i + '" class="fa fa-edit edit-author-control" onclick="bookCatalog.openUpdateAuthorModal(\'' + e + '\')"></i>' + e + ' (' + getAmountOfBooksByAuthor(e) + ' book(s))</td>' +
                 '</tr>';
             authorsHtml += nodeAuthorHtml;
         });

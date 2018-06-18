@@ -5,7 +5,6 @@ using System.Web;
 
 namespace BookCatalog.ViewModels
 {
-    // TODO: MAYBE INHERITANCE ???
     public class AuthorSearchViewModel
     {
         public int Id { get; set; }

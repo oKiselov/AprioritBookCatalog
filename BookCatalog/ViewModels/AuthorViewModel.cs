@@ -1,8 +1,4 @@
-﻿using BookCatalog.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BookCatalog.ViewModels
 {
@@ -17,9 +13,5 @@ namespace BookCatalog.ViewModels
         [Required(ErrorMessage = "Last Name is required field")]
         [MaxLength(100)]
         public string LastName { get; set; }
-
-        //public int AmountOfBooks { get; set; }
-
-        //public virtual ICollection<Book> BooksCollection { get; set; }
     }
 }
