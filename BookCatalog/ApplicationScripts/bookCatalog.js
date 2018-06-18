@@ -143,10 +143,9 @@
             }
         });
 
-        $('#searchInput').on('keyup', function () {
+        $('.dataTables_filter input').unbind().keyup(function (e) {
             bookTable.api().columns(2).search(this.value).draw();
         });
-
     };
 
     self.InitEditBookModal = function () {
@@ -218,8 +217,8 @@
     };
 
     function removeBook(bookId) {
-        if (postDataToServer(bookId, urls.removeBook))
-            bookTable.ajax.reload();
+        if (postDataToServer({ bookId: bookId }, urls.removeBook))
+            bookTable.DataTable().ajax.reload();
     };
 
     function updateAuthor() {
@@ -257,7 +256,7 @@
     function updateBook() {
         var form = $('#editBookDialog #editBookForm');
 
-        if (!form.valid()) {
+        if (!form.valid() || $('#editBookDialog #editBookForm #multiselectAuthors').selectedIndex == -1) {
             alert(requiredFieldsNotFilled);
             return;
         }
@@ -300,6 +299,19 @@
         $('#editAuthorDialog #editAuthorForm #lastName').val("");
     }
 
+    self.openUpdateAuthorModal = function(id, authorName) {
+        var names = authorName.split(" ");
+
+        var lastName = names.filter(function (elem) {
+            return elem != names[0];
+        }).join(" ");
+
+        $('#editAuthorDialog #editAuthorForm #authorId').val(id);
+        $('#editAuthorDialog #editAuthorForm #firstName').val(names[0]);
+        $('#editAuthorDialog #editAuthorForm #lastName').val(lastName);
+
+        authorEditor.dialog("open");
+    }
 
     self.getAuthorsList = function () {
         $.ajax({
@@ -325,6 +337,18 @@
     };
 
     function format(rowData) {
+        var existingAuthors = rowData.Authors.split(", ");
+        var authorsHtml = "";
+
+        $.each(existingAuthors, function (i, e) {
+            var nodeAuthorHtml = '<tr>' +
+                '<td>Author:</td>' +
+                '<td>' + '<i id="editAuthorButton' + i + '" class="fa fa-edit edit-author-control" onclick="bookCatalog.openUpdateAuthorModal(' + rowData.Id + ',\'' + e + '\')"></i>' + e + '</td>' +
+                '</tr>';
+            authorsHtml += nodeAuthorHtml;
+        });
+
+
         return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
             '<tr>' +
             '<td>Book Id:</td>' +
@@ -346,11 +370,7 @@
             '<td>Rate:</td>' +
             '<td>' + rowData.Rate + '</td>' +
             '</tr>' +
-            '<tr>' +
-            '<td>Authors:</td>' +
-            '<td>' + rowData.Authors + '</td>' +
-            '</tr>' +
-            '<tr>' +
+            authorsHtml +
             '</table>';
     };
 }).apply(bookCatalog);

@@ -34,7 +34,7 @@ namespace BookCatalog.Data.Repositories
             return dbSetAuthors.ToList();
         }
 
-        public Book GetBook(int bookId)
+        public Book GetBook(int? bookId)
         {
             return dbSetBooks.FirstOrDefault(b=>b.Id == bookId);
         }
@@ -105,8 +105,20 @@ namespace BookCatalog.Data.Repositories
         {
             using (var tran = new TransactionScope())
             {
-                var oldBook = dbSetBooks.FirstOrDefault(b => b.Id == book.Id);
-                oldBook = book;
+                var oldBook = dbSetBooks
+                    .Include(b => b.Authors)
+                    .FirstOrDefault(b => b.Id == book.Id);
+
+                var authIdList = book.Authors.Select(a => a.Id).ToList();
+
+                var authors = dbSetAuthors
+                    .Where(aut => authIdList.Contains(aut.Id))
+                    .ToList();
+
+                oldBook.Authors.Clear();
+                authors.ForEach(auth => oldBook.Authors.Add(auth));
+
+                bookCatalogContext.Entry(oldBook).CurrentValues.SetValues(book);
                 bookCatalogContext.SaveChanges();
                 tran.Complete();
             }

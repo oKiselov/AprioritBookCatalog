@@ -26,11 +26,10 @@ namespace BookCatalog.Controllers
 
         [HttpPost]
         public JsonResult GetBookResultTable(DataTablePaginationModel paginationModel)
-        {
+        { 
             return Json(new
             {
                 sEcho = paginationModel.sEcho,
-                iTotalRecords = bookService.GetTotalBooksAmount(paginationModel.sSearch_2),
                 iTotalDisplayRecords = bookService.GetTotalBooksAmount(paginationModel.sSearch_2),
                 aaData = bookService.GetFilteredBooks(paginationModel)
             });
@@ -48,7 +47,7 @@ namespace BookCatalog.Controllers
         }
 
         [HttpPost]
-        public JsonResult RemoveBook(int bookId)
+        public JsonResult RemoveBook(int? bookId)
         {
             return Json(new { result = bookService.RemoveBook(bookId) });
         }

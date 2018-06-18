@@ -35,7 +35,7 @@ namespace BookCatalog.Services
             return authorViews;
         }
 
-        public Book GetBook(int bookId)
+        public Book GetBook(int? bookId)
         {
             return bookCatalogRepository.GetBook(bookId);
         }
@@ -61,7 +61,7 @@ namespace BookCatalog.Services
             return bookCatalogRepository.GetBooksAmount(searchOption);
         }
 
-        public ServiceResponse RemoveBook(int bookId)
+        public ServiceResponse RemoveBook(int? bookId)
         {
             var book = bookCatalogRepository.GetBook(bookId);
             var response = new ServiceResponse();
