@@ -2,10 +2,44 @@
 
 (function () {
     var self = this;
+
+    var bookCatalogTableBody = '#BookCatalogTable tbody';
+    var editBookFormBookId = '#editBookDialog #editBookForm #bookId';
+    var editBookFormBookTitle = '#editBookDialog #editBookForm #title';
+    var editBookFormBookYear = '#editBookDialog #editBookForm #yearBookPublished';
+    var editBookFormBookPages = '#editBookDialog #editBookForm #pages';
+    var editBookFormBookRate = '#editBookDialog #editBookForm #rate';
+    var editBookDialog = '#editBookDialog';
+    var editBookDialogForm = '#editBookDialog #editBookForm';
+    var editBookDialogSaveButton = '#editBookDialog #btnSaveBookFromModal';
+    var editBookDialogCloseButton = '#editBookDialog #btnCloseBookEditModal';
+    var editBookMultiselectAuthors = '#editBookDialog #editBookForm #multiselectAuthors';
+    var editBookMultiselectAuthorsOption = '#editBookDialog #editBookForm #multiselectAuthors option';
+
+    var editAuthorFormAuthorId = '#editAuthorDialog #editAuthorForm #authorId'; 
+    var editAuthorFormFirstName = '#editAuthorDialog #editAuthorForm #firstName';
+    var editAuthorFormLastName = '#editAuthorDialog #editAuthorForm #lastName';
+    var editAuthorDialog = '#editAuthorDialog';
+    var editAuthorDialogForm = '#editAuthorDialog #editAuthorForm';
+    var editAuthorDialogSaveButton = '#editAuthorDialog #btnSaveAuthorFromModal';
+    var editAuthorDialogCloseButton = '#editAuthorDialog #btnCloseAuthorEditModal';
+
+    var currentAdditionalBookTable = {
+        rowDataId : 'td.rowDataId',
+        rowDataTitle : 'td.rowDataTitle',
+        rowDataPublishingYear : 'td.rowDataPublishingYear',
+        rowDataPagesAmount : 'td.rowDataPagesAmount',
+        rowDataRate : 'td.rowDataRate'
+    };
+
     var bookTable;
     var bookTableEditor;
     var authorEditor;
-    var urls = {};
+    var urls = {
+        editBookFormUrl : "ApplicationScripts/editBook.html",
+        editAuthorFromUrl : "ApplicationScripts/editAuthor.html",
+        expanderBookInfoUrl : "ApplicationScripts/expanderBookInfo.html"
+    };
     var requiredFieldsNotFilled = "Fill all required fileds";
     var authorsArray = [];
 
@@ -83,7 +117,7 @@
             }
         });
 
-        $('#BookCatalogTable tbody').on('click', 'td.details-control', function () {
+        $(bookCatalogTableBody).on('click', 'td.details-control', function () {
             var tableRow = $(this).closest('tr');
             var tdi = tableRow.find("i.fa");
             var row = bookTable.api().row(tableRow);
@@ -93,44 +127,42 @@
                 tableRow.removeClass('shown');
                 tdi.first().removeClass('fa-minus-square');
                 tdi.first().addClass('fa-plus-square');
+                self.authorsHtml = '';
             }
             else {
-                row.child(format(row.data())).show();
-                tableRow.addClass('shown');
-                tdi.first().removeClass('fa-plus-square');
-                tdi.first().addClass('fa-minus-square');
+                getAdditionalBookInfo(tableRow);
             }
         });
 
-        $('#BookCatalogTable tbody').on('click', 'td.remove-control', function () {
+        $(bookCatalogTableBody).on('click', 'td.remove-control', function () {
             var tableRow = (this).closest('tr');
             var row = bookTable.api().row(tableRow).data();
             if (confirm("Are you sure, you want to remove book: " + row.Title + "?"))
                 removeBook(row.Id);
         });
 
-        $('#BookCatalogTable tbody').on('click', 'td.edit-control', function () {
+        $(bookCatalogTableBody).on('click', 'td.edit-control', function () {
             var tableRow = (this).closest('tr');
             var row = bookTable.api().row(tableRow).data();
             clearBookFilledForm();
 
-            $('#editBookDialog #editBookForm #bookId').val(row.Id);
-            $('#editBookDialog #editBookForm #title').val(row.Title);
-            $('#editBookDialog #editBookForm #yearBookPublished').datepicker().val(row.PublishingYear);
-            $('#editBookDialog #editBookForm #pages').val(row.PagesAmount);
-            $('#editBookDialog #editBookForm #rate').val(row.Rate);
+            $(editBookFormBookId).val(row.Id);
+            $(editBookFormBookTitle).val(row.Title);
+            $(editBookFormBookYear).datepicker().val(row.PublishingYear);
+            $(editBookFormBookPages).val(row.PagesAmount);
+            $(editBookFormBookRate).val(row.Rate);
             var existingAuthors = row.Authors.split(", ");
             var selectedAuthors = [];
 
             $.each(existingAuthors, function (i, e) {
-                $('#editBookDialog #editBookForm #multiselectAuthors option').filter(function () {
-                    if ($(this).text() == e) {
+                $(editBookMultiselectAuthorsOption).filter(function () {
+                    if ($(this).text() === e) {
                         var sel = $(this).val();
                         selectedAuthors.push(sel);
                     }
                 });
             });
-            $('#editBookDialog #editBookForm #multiselectAuthors').chosen().val(selectedAuthors).trigger("chosen:updated");
+            $(editBookMultiselectAuthors).chosen().val(selectedAuthors).trigger("chosen:updated");
 
             bookTableEditor.dialog("open");
         });
@@ -147,7 +179,7 @@
     };
 
     self.InitEditBookModal = function () {
-        bookTableEditor = $('#editBookDialog').load("ApplicationScripts/editBook.html").dialog({
+        bookTableEditor = $(editBookDialog).load(urls.editBookFormUrl).dialog({
             autoOpen: false,
             modal: true,
             classes: {
@@ -168,15 +200,15 @@
     };
 
     self.InitEditBookModalButtons = function () {
-        $('#editBookDialog #btnSaveBookFromModal').click(function (e) {
+        $(editBookDialogSaveButton).click(function (e) {
             e.preventDefault();
             updateBook();
         });
-        $('#editBookDialog #btnCloseBookEditModal').click(function (e) {
+        $(editBookDialogCloseButton).click(function (e) {
             clearBookFilledForm();
-            $('#editBookDialog').dialog("close");
+            $(editBookDialog).dialog("close");
         });
-        $('#editBookDialog #editBookForm #yearBookPublished').datepicker({
+        $(editBookFormBookYear).datepicker({
             changeMonth: false,
             changeYear: true,
             showButtonPanel: true,
@@ -185,18 +217,18 @@
     };
 
     self.InitEditAuthorModalButtons = function () {
-        $('#editAuthorDialog #btnSaveAuthorFromModal').click(function (e) {
+        $(editAuthorDialogSaveButton).click(function (e) {
             e.preventDefault();
             updateAuthor();
         });
-        $('#editAuthorDialog #btnCloseAuthorEditModal').click(function (e) {
+        $(editAuthorDialogCloseButton).click(function (e) {
             clearAuthorFilledForm();
-            $('#editAuthorDialog').dialog("close");
+            $(editAuthorDialog).dialog("close");
         });
     };
 
     self.InitEditAuthorModal = function () {
-        authorEditor = $('#editAuthorDialog').load("ApplicationScripts/editAuthor.html").dialog({
+        authorEditor = $(editAuthorDialog).load(urls.editAuthorFromUrl).dialog({
             autoOpen: false,
             modal: true,
             classes: {
@@ -219,9 +251,9 @@
     self.openUpdateAuthorModal = function (authorName) {
         var author = getAuthorByFullName(authorName);
 
-        $('#editAuthorDialog #editAuthorForm #authorId').val(author.id);
-        $('#editAuthorDialog #editAuthorForm #firstName').val(author.firstName);
-        $('#editAuthorDialog #editAuthorForm #lastName').val(author.lastName);
+        $(editAuthorFormAuthorId).val(author.id);
+        $(editAuthorFormFirstName).val(author.firstName);
+        $(editAuthorFormLastName).val(author.lastName);
 
         authorEditor.dialog("open");
     }
@@ -245,7 +277,7 @@
     };
 
     function updateAuthor() {
-        var form = $('#editAuthorDialog #editAuthorForm');
+        var form = $(editAuthorDialogForm);
 
         if (!form.valid()) {
             alert(requiredFieldsNotFilled);
@@ -254,7 +286,7 @@
         var authorForm = getAuthorFilledForm();
         if (postDataToServer(authorForm, urls.updateAuthor)) {
             clearAuthorFilledForm();
-            $('#editAuthorDialog').dialog("close");
+            $(editAuthorDialog).dialog("close");
         }
     }
 
@@ -277,50 +309,50 @@
     }
 
     function updateBook() {
-        var form = $('#editBookDialog #editBookForm');
+        var form = $(editBookDialogForm);
 
-        if (!form.valid() || $('#editBookDialog #editBookForm #multiselectAuthors').selectedIndex == -1) {
+        if (!form.valid() || $(editBookMultiselectAuthors).selectedIndex === -1) {
             alert(requiredFieldsNotFilled);
             return;
         }
         var bookForm = getBookFilledForm();
         if (postDataToServer(bookForm, urls.updateBook)) {
             clearBookFilledForm();
-            $('#editBookDialog').dialog("close");
+            $(editBookDialog).dialog("close");
         }
     }
 
     function getBookFilledForm() {
         return {
-            Id: $('#editBookDialog #editBookForm #bookId').val(),
-            title: $('#editBookDialog #editBookForm #title').val(),
-            publishingYear: new Date($('#editBookDialog #editBookForm #yearBookPublished').datepicker().val(), 0, 1).toJSON(),
-            pagesAmount: $('#editBookDialog #editBookForm #pages').val(),
-            rate: $('#editBookDialog #editBookForm #rate').val(),
-            authors: $('#editBookDialog #editBookForm #multiselectAuthors').chosen().val()
+            Id: $(editBookFormBookId).val(),
+            title: $(editBookFormBookTitle).val(),
+            publishingYear: new Date($(editBookFormBookYear).datepicker().val(), 0, 1).toJSON(),
+            pagesAmount: $(editBookFormBookPages).val(),
+            rate: $(editBookFormBookRate).val(),
+            authors: $(editBookMultiselectAuthors).chosen().val()
         };
     }
 
     function clearBookFilledForm() {
-        $('#editBookDialog #editBookForm #bookId').val("");
-        $('#editBookDialog #editBookForm #title').val("");
-        $('#editBookDialog #editBookForm #yearBookPublished').datepicker().val("");
-        $('#editBookDialog #editBookForm #pages').val("");
-        $('#editBookDialog #editBookForm #rate').val("");
-        $('#editBookDialog #editBookForm #multiselectAuthors').chosen().val("").trigger("chosen:updated");
+        $(editBookFormBookId).val("");
+        $(editBookFormBookTitle).val("");
+        $(editBookFormBookYear).datepicker().val("");
+        $(editBookFormBookPages).val("");
+        $(editBookFormBookRate).val("");
+        $(editBookMultiselectAuthors).chosen().val("").trigger("chosen:updated");
     }
 
     function getAuthorFilledForm() {
         return {
-            id: $('#editAuthorDialog #editAuthorForm #authorId').val(),
-            firstName: $('#editAuthorDialog #editAuthorForm #firstName').val(),
-            lastName: $('#editAuthorDialog #editAuthorForm #lastName').val()
+            id: $(editAuthorFormAuthorId).val(),
+            firstName: $(editAuthorFormFirstName).val(),
+            lastName: $(editAuthorFormLastName).val()
         };
     }
 
     function clearAuthorFilledForm() {
-        $('#editAuthorDialog #editAuthorForm #firstName').val("");
-        $('#editAuthorDialog #editAuthorForm #lastName').val("");
+        $(editAuthorFormFirstName).val("");
+        $(editAuthorFormLastName).val("");
     }
 
     function setAuthorsList(authorsList) {
@@ -347,7 +379,7 @@
     function getAmountOfBooksByAuthor(author) {
         var amount; 
         authorsArray.filter(function (elem) {
-            if (elem.fullName == author)
+            if (elem.fullName === author)
                 amount = elem.amountOfBooks;
         });
         return amount;
@@ -356,16 +388,43 @@
     function getAuthorByFullName(fullName) {
         var author;
         authorsArray.filter(function (elem) {
-            if (elem.fullName == fullName)
+            if (elem.fullName === fullName)
                 author = elem;
         });
         return author;
     };
 
-    function format(rowData) {
-        var existingAuthors = rowData.Authors.split(", ");
-        var authorsHtml = "";
+    function getAdditionalBookInfo(tableRowElementId) {
+        var tdi = tableRowElementId.find("i.fa");
+        var row = bookTable.api().row(tableRowElementId);
 
+        $.ajax({
+            type: "GET",
+            url: urls.expanderBookInfoUrl,
+            success: function (response) {
+                response += setAuthorsForExpanderBookInfo(row.data());
+                row.child(response).show();
+
+                $(currentAdditionalBookTable.rowDataId).html(row.data().Id);
+                $(currentAdditionalBookTable.rowDataTitle).html(row.data().Title);
+                $(currentAdditionalBookTable.rowDataPublishingYear).html(row.data().PublishingYear);
+                $(currentAdditionalBookTable.rowDataPagesAmount).html(row.data().PagesAmount);
+                $(currentAdditionalBookTable.rowDataRate).html(row.data().Rate);
+
+                tableRowElementId.addClass('shown');
+                tdi.first().removeClass('fa-plus-square');
+                tdi.first().addClass('fa-minus-square');
+
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("Error occured during execution. Status: " + xhr.status + ", Error: " + thrownError);
+            }
+        });
+    };
+
+    function setAuthorsForExpanderBookInfo(rowData) {
+        var existingAuthors = rowData.Authors.split(", ");
+        var authorsHtml = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
         $.each(existingAuthors, function (i, e) {
             var nodeAuthorHtml = '<tr>' +
                 '<td>Author:</td>' +
@@ -373,30 +432,6 @@
                 '</tr>';
             authorsHtml += nodeAuthorHtml;
         });
-
-
-        return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
-            '<tr>' +
-            '<td>Book Id:</td>' +
-            '<td>' + rowData.Id + '</td>' +
-            '</tr>' +
-            '<tr>' +
-            '<td>Title:</td>' +
-            '<td>' + rowData.Title + '</td>' +
-            '</tr>' +
-            '<tr>' +
-            '<td>Year of Publishing:</td>' +
-            '<td>' + rowData.PublishingYear + '</td>' +
-            '</tr>' +
-            '<tr>' +
-            '<td>Amount of Pages:</td>' +
-            '<td>' + rowData.PagesAmount + '</td>' +
-            '</tr>' +
-            '<tr>' +
-            '<td>Rate:</td>' +
-            '<td>' + rowData.Rate + '</td>' +
-            '</tr>' +
-            authorsHtml +
-            '</table>';
-    };
+        return authorsHtml += '</table>';
+    }
 }).apply(bookCatalog);
